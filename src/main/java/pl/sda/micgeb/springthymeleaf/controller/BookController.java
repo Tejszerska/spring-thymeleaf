@@ -3,9 +3,9 @@ package pl.sda.micgeb.springthymeleaf.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 import pl.sda.micgeb.springthymeleaf.model.Book;
 
 import javax.validation.Valid;
@@ -37,10 +37,21 @@ public class BookController {
     }
 
     @PostMapping("/addBook")
-    public String addBook(@Valid @ModelAttribute Book book) {
+    public String addBook(@Valid @ModelAttribute("newBook") Book book, Errors errors, ModelMap model) {
+        if(errors.hasErrors()){
+            errors.getAllErrors().forEach(i -> System.out.println(i));
+            model.addAttribute("books", books);
+            return "showBooks";
+        }
         System.out.println(book);
         books.add(book);
 
+        return "redirect:/book";
+    }
+
+    @PostMapping("/removeBook")
+    public String removeBook(@RequestParam String author){
+        books.removeIf(book -> book.getAuthor().equals(author));
         return "redirect:/book";
     }
 }

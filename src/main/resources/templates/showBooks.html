@@ -8,18 +8,21 @@
 </head>
 <body>
 <h1>Nasze ksiązki</h1>
-
 <tr th:each="book: ${books}">
     <p>Autor: <td th:text="${book.getAuthor()}"></td><br></p>
     <p>Tytuł: <td th:text="${book.getTitle()}"></td><br></p>
+    <form th:action="@{/removeBook}" method="post">
+        <input type="hidden" name="author" th:value="${book.getAuthor()}">
+        <input type="submit" value="Usuń z listy">
+    </form>
     <hr>
 </tr>
-
 <form th:action="@{/addBook}" th:object="${newBook}" method="post">
     <p>Podaj tytuł: <input type="text" th:field="*{title}"></p>
+    <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
     <p>Podaj autora: <input type="text" th:field="*{author}"></p>
+    <div th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></div>
     <p><input type="submit" value="Dodaj do listy"></p>
-
 </form>
 </body>
 </html>
